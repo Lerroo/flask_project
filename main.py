@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 import bcrypt
 
-import models
+from models import users_info
 from config import db, app
 
 @app.route('/sign_up/', methods=['post', 'get'])
@@ -15,13 +15,13 @@ def sign_up():
         password_g = bcrypt.hashpw(request.form.get('password').encode(), bcrypt.gensalt())
         print("{}:{}:{}".format(user_g, email_g, password_g))
         db.create_all()
-        u = models.users_info(user_login=user_g, email=email_g, user_password=password_g)
+        u = users_info(user_login=user_g, email=email_g, user_password=password_g)
         db.session.add(u)
-        # try:
-        db.session.commit()
-        message = 'Your data is saved'
-        # except exc.SQLAlchemyError:
-        #     return render_template('sign_up.html', message='Incorect email or username')
+        try:
+            db.session.commit()
+            message = 'Your data is saved'
+        except exc.SQLAlchemyError:
+            return render_template('sign_up.html', message='Incorect email or username')
     return render_template('sign_up.html', message=message)  
 
 @app.route('/sign_in/', methods=['post', 'get'])
@@ -31,7 +31,9 @@ def login():
         email = request.form.get('email')  # запрос к данным формы
         password = str(request.form.get('password'))
         if password != "" and email != "":
-            query_email_and_password = dict(db.session.query(models.users_info.email, models.users_info.user_password).filter(models.users_info.email==email))
+            query_email_and_password = dict(db.session.query(users_info.email, users_info.user_password) \
+                .filter(users_info.email == email))
+            print(query_email_and_password)
             hash_password = query_email_and_password.get(email, b"000")
             if bcrypt.checkpw(password.encode(), hash_password):
                 message = "Correct"
