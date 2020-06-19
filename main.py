@@ -4,7 +4,10 @@ from sqlalchemy import exc
 import bcrypt
 
 from models import users_info
-from config import db, app
+from config import db, app, local_salt
+
+def enc(x, y):
+    return bcrypt.hashpw(x, y)
 
 @app.route('/sign_up/', methods=['post', 'get'])
 def sign_up():
@@ -12,10 +15,17 @@ def sign_up():
     if request.method == 'POST':
         user_g = request.form.get('user') 
         email_g = request.form.get('email')  
-        password_g = bcrypt.hashpw(request.form.get('password').encode(), bcrypt.gensalt())
-        print("{}:{}:{}".format(user_g, email_g, password_g))
-        db.create_all()
-        u = users_info(user_login=user_g, email=email_g, user_password=password_g)
+        password_g = request.form.get('password')
+        if not user_g or not email_g or not password_g:
+            return render_template('sign_up.html', message='Incorect email or username')
+        u = users_info(
+            user_login=user_g,
+            email=email_g, 
+            user_password=enc( \
+                enc(password_g.encode(), local_salt), 
+                bcrypt.gensalt()
+                )
+            )
         db.session.add(u)
         try:
             db.session.commit()
@@ -30,17 +40,15 @@ def login():
     if request.method == 'POST':    
         email = request.form.get('email')  # запрос к данным формы
         password = str(request.form.get('password'))
-        if password != "" and email != "":
-            query_email_and_password = dict(db.session.query(users_info.email, users_info.user_password) \
-                .filter(users_info.email == email))
-            print(query_email_and_password)
-            hash_password = query_email_and_password.get(email, b"000")
-            if bcrypt.checkpw(password.encode(), hash_password):
+        query_email_and_password = db.session.query(users_info.email, users_info.user_password) \
+            .filter(users_info.email == email) \
+            .first()
+        if query_email_and_password:
+            hash_password = query_email_and_password[1]
+            if bcrypt.checkpw(enc(password.encode(), local_salt), hash_password):
                 message = "Correct"
             else:
                 message = "Wrong email or password" 
-        else:
-            message = "Wrong email or password" 
     if request.method == 'GET':
         message = 'Input email and password'     
     return render_template('sign_in.html', message=message)

@@ -5,11 +5,3 @@ class users_info(db.Model):
     user_login = db.Column(db.String(64), index = True, unique = True)
     user_password = db.Column(db.String(120), index = True)
     email = db.Column(db.String(120),index = True, unique = True )
-
-def init_db():
-    new_user = users_info(user_login='us222222g3', user_password='passwo22222_g3', email='ema22222_3g' )
-    db.session.add(new_user)
-    db.session.commit()
-
-if __name__ == '__main__':
-    init_db()
