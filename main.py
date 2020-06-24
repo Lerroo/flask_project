@@ -7,7 +7,7 @@ from models import users_info
 from config import db, app, local_salt
 
 def enc(x, y):
-    return bcrypt.hashpw(x, y)
+    return x, y)
 
 @app.route('/sign_up/', methods=['post', 'get'])
 def sign_up():
@@ -21,11 +21,8 @@ def sign_up():
         u = users_info(
             user_login=user_g,
             email=email_g, 
-            user_password=enc( \
-                enc(password_g.encode(), local_salt), 
-                bcrypt.gensalt()
-                )
-            )
+            user_password=bcrypt.hashpw(password_g.encode(), bcrypt.gensalt())
+        )
         db.session.add(u)
         try:
             db.session.commit()
@@ -33,6 +30,12 @@ def sign_up():
         except exc.SQLAlchemyError:
             return render_template('sign_up.html', message='Incorect email or username')
     return render_template('sign_up.html', message=message)  
+
+def check_password(password, hash_password):
+    if hash_password:
+        if bcrypt.checkpw(password.encode(), hash_password):
+            return True
+    return False
 
 @app.route('/sign_in/', methods=['post', 'get'])
 def login():
@@ -43,12 +46,10 @@ def login():
         query_email_and_password = db.session.query(users_info.email, users_info.user_password) \
             .filter(users_info.email == email) \
             .first()
-        if query_email_and_password:
-            hash_password = query_email_and_password[1]
-            if bcrypt.checkpw(enc(password.encode(), local_salt), hash_password):
-                message = "Correct"
-            else:
-                message = "Wrong email or password" 
+        if check_password(password, query_email_and_password[1]):
+            message = "Correct"
+        else:
+            message = "Wrong email or password" 
     if request.method == 'GET':
         message = 'Input email and password'     
     return render_template('sign_in.html', message=message)
