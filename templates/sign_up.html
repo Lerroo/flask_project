@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign_up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container bg-info text-white p-3 rounded-lg" style="width: 30%!important; margin-top: 10%;">
+        <div class="row" >
+            <div class="col text-right">
+                <a class="text-dark text-monospace" href="..\..\sign_in">sign_in</a>
+            </div>
+            <div class="col text-center text-monospace">
+                <p>{{ message }}</p>
+            </div>
+            <div class="col">
+                <a class="text-dark text-monospace" href="..\">index</a>
+            </div>
+        </div>
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Username</label>
+                <input name="user" class="form-control" placeholder="Enter Username">
+                
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Password</label>
+                <input type="password"  name="password" class="form-control" aria-describedby="emailHelp" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <p>
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </p>
+        </form>
+    </div>
+</body>
+</html>
