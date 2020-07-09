@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign_up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container bg-info text-white p-3 w-50 mt-4 rounded-lg">
+        <div class="row" >
+            <h1>Detail info about machine #{{machine.id}}</h1>
+        </div>
+        <form action="" method="post">
+            <div class="form-group">
+                <label>Name machine</label>
+                <input name="name" class="form-control" value="{{machine.name}}" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Description machine</label>
+                <textarea name="description" id="description" class="form-control" placeholder="Input description">{{machine.description}}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Type machine</label>
+                <select class="form-control" name='select_type' id="select_type" value="{{machine.id}}">
+                    {% for type in type_list %}
+                    <option value={{type.id}}>{{type.value}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Machine created by</label>
+                <input name="createdBy" disabled class="form-control"  value="{{machine.createdBy}}" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Machine created on</label>
+                <input name="createdOn" disabled class="form-control"  value="{{machine.createdOn}}" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Machine modified by</label>
+                <input name="modifiedBy" disabled class="form-control"  value="{{machine.modifiedBy}}" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Machine modified on</label>
+                <input name="name" disabled class="form-control"  value="{{machine.modifiedOn}}" placeholder="Enter name">
+            </div>
+            <p>
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </p>
+        </form>
+    </div>
+</body>
+</html>
