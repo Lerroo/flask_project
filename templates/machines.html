@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Task1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
 </head>
 <body>
     <div class="row w-50 mx-auto" >
@@ -17,13 +16,9 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">name</th>
-                    <!-- <th scope="col">description</th>  -->
                     <th scope="col">type</th>
-                    <!-- <th scope="col">createOn</th>
-                    <th scope="col">createBy</th> -->
                     <th scope="col">modifiedOn</th>
                     <th scope="col"></th>
-                    <!-- <th scope="col">modifiedBy</th> -->
                 </tr>
                 </thead>
                 {% for item in items %}
@@ -32,30 +27,15 @@
                         <a class="text-monospace text-dark"'>{{ item.id }}</a>
                     </td>
                     <td>{{ item.name }}</td>
-                    <!-- <td>{{ item.description }}</td> -->
                     <td>{{ item.type_model.value }}</td>
-                    <!-- <td>{{ item.createdOn }}</td>
-                    <td>{{ item.createdBy }}</td> -->
                     <td>{{ item.modifiedOn }}</td>
                     <td><a href="/machine/{{item.id}}" class="btn btn-warning w-100 p-1">Details</a>
                         <a href="/machine/del/{{item.id}}" class="btn btn-danger w-100 p-1 mb-2">Delete</a>
-                        <!-- <a href="" class="btn btn-danger w-25 p-1 mb-2">Delete machine</a>  -->
                     </form> </td>
-                    <!-- <td>{{ item.modifiedBy }}</td> -->
                 </tr>
                 {% endfor %}
-                    </tbody>
             </table>  
         </div>
     </div>   
-    <script>
-        function update_info(arr){
-            document.getElementById('label_id').innerHTML = arr[0]
-            document.getElementById('name').value = arr[1];
-            document.getElementById('description').value = arr[2];
-            document.getElementById("select_type").value = arr[3];
-            console.log(arr)
-        }
-    </script>
 </body>
 </html>

@@ -5,10 +5,6 @@ import bcrypt
 import json
 from datetime import datetime
 
-#   45@2.com
-
-
-
 from models import Users_info, Machines, Type, Machine_archive
 from config import db, app
 
@@ -50,7 +46,7 @@ def sign_up():
 def login():
     message = ''    
     if request.method == 'POST':    
-        email = request.form.get('email')  # запрос к данным формы
+        email = request.form.get('email') 
         password = str(request.form.get('password'))
         query_email_and_password = db.session.query(Users_info.user_login, Users_info.email, Users_info.user_password) \
             .filter(Users_info.email == email) \
@@ -68,20 +64,15 @@ def login():
 
 @app.route('/machines', methods=['get'])
 def machines():
-    err_message = 'Status: Err name or descr'
     if request.method == 'GET':
         items = Machines.query.all() 
         return render_template('machines.html', items=items)
-    else:
-        pass
-    
 
 @app.route('/machine/new/', methods=['post', 'get'])
 def new():
     if request.method == "POST":
         name = request.form['name']
         description = request.form['description']
-        # err при redirect
         if not name or not description:
             return redirect("/machines/new")
         typeid = request.form.get('select_type')
@@ -97,9 +88,8 @@ def new():
             db.session.commit()
             log_message("{} add new machine at {}".format(createdBy, machines.createdOn))
             return redirect(url_for('machines'))
-        except :
-            #404
-            return "err sql"
+        except:
+            abort(404)
     else:
         type_list = Type.query.all()
         return render_template('machines_new.html', type_list=type_list)
@@ -111,11 +101,10 @@ def machines_del(id):
         db.session.delete(machine)
         db.session.commit()
         return redirect(url_for('machines'))
-    except :
-        return 'errr'
-     
+    except:
+        abort(404)     
 
-@app.route('/machine/<int:id>', methods=['post', 'GET', 'DELETE'])
+@app.route('/machine/<int:id>', methods=['post', 'GET'])
 def machines_info(id):
     name_usr = session.get('name_usr')
     if request.method == "GET":
@@ -126,13 +115,11 @@ def machines_info(id):
     else:
         # POST
         machine = Machines.query.get_or_404(id)
-        # t = Type(id, Machines.type_model.value)
         new_machine = Machines(
             id=id,
             name=request.form['name'], 
             description=request.form['description'], 
             typeid=int(request.form['select_type']), 
-            # type_model=t.value
         )
         if machine != new_machine:
             archive = Machine_archive(
@@ -149,8 +136,8 @@ def machines_info(id):
                 db.session.add(archive)
                 db.session.commit()
                 log_message("Archive update")
-            except :
-                return 'errr'
+            except:
+                abort(404)
             machine = machine.update(
                 new_machine.name,
                 new_machine.description,
@@ -159,8 +146,8 @@ def machines_info(id):
                 now_time_iso())
             try:
                 db.session.commit()
-            except :
-                return 'errr'
+            except:
+                abort(404)
             log_message("User {} changed info #{}".format(name_usr, id))
             return redirect(url_for('machines'))
         else:
@@ -168,13 +155,9 @@ def machines_info(id):
             print('22222222222222222222222')
             return redirect(url_for('/machines', id=id))
 
-
-# def authenticate_user(error):
-#     return redirect(login), 401
-
 @app.errorhandler(401)
-@app.errorhandler(404)
 @app.errorhandler(403)
+@app.errorhandler(404)
 def forbidden(error):
     return render_template('404.html',message=error)
 

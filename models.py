@@ -1,7 +1,6 @@
 from config import db
 from datetime import datetime
 
-
 class Users_info(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     user_login = db.Column(db.String(64), index = True, unique = True)
@@ -28,7 +27,7 @@ class Machines(db.Model):
     createdBy = db.Column(db.String(64), index = True)
     createdOn = db.Column(db.String(64), index = True)
     modifiedBy = db.Column(db.String(64), default = "None", index = True)
-    modifiedOn = db.Column(db.String(64), default = "None", index = True)#, default=datetime.now().isoformat(sep='T', timespec="seconds"))
+    modifiedOn = db.Column(db.String(64), default = "None", index = True)
 
     def update(self, name, description, typeid, modifiedBy, modifiedOn):
         self.name = name
@@ -37,7 +36,6 @@ class Machines(db.Model):
         self.modifiedBy = modifiedBy
         self.modifiedOn = modifiedOn
         return self 
-
 
     def __repr__(self):
         return "<Machines {}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,self.description,self.typeid,self.createdOn,
@@ -50,8 +48,7 @@ class Machines(db.Model):
                 self.description == other.description and \
                 self.typeid == other.typeid:
                     return True
-        return NotImplemented
-        
+        return NotImplemented        
 
 class Type(db.Model):
     id = db.Column(db.Integer, primary_key = True)
