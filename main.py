@@ -7,7 +7,10 @@ from datetime import datetime
 import logging
 
 from models import UsersInfo, Machine, Type, MachineArchive
-from config import db,app
+from config import TestingConfig, DevelopmentConfig, ProductionConfig
+
+app = Flask(__name__)
+db = SQLAlchemy(app)
 
 def log_message(message):
     print('-'*10 + message + '-'*10)
@@ -162,13 +165,12 @@ def machines_info(id):
 def forbidden(error):
     return render_template('404.html',message=error)
 
-
 @app.route('/')
 def index():
     return render_template('index.html', message='Сhoose your direction.')  
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='log_'+str(now_time_iso()[:-9])+'.log', level=logging.INFO)
-    
-
+    app.config.from_object(TestingConfig())
     app.run()
+    db.create_all()
+    logging.basicConfig(filename='log_'+str(now_time_iso()[:-9])+'.log', level=logging.INFO)

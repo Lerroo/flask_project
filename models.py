@@ -1,4 +1,4 @@
-from config import db
+from main import db
 from datetime import datetime
 
 class UsersInfo(db.Model):

@@ -2,16 +2,21 @@ import os
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    DATABASE_URI = 'sqlite:///'
+    SECRET_KEY = 'hard to guess string'#
+    basedir = os.path.abspath(os.path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'bd.db')
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+class ProductionConfig(Config):
+    DATABASE_URI = 'mysql://user@localhost/foo'
 
-app = Flask(__name__)
-app.debug = True
-app.config.from_object('config')
-app.config['SECRET_KEY'] = 'hard to guess string'
+class DevelopmentConfig(Config):
+    DEBUG = True
 
-db = SQLAlchemy(app)
-db.create_all()
+class TestingConfig(Config):
+    DB_SERVER = 'localhost'
+    TRACK_MODIFICATIONS = False
+    DEBUG = True
+    DATABASE_URI = 'sqlite:///' + os.path.join(Config.basedir, 'bd.db')
