@@ -42,6 +42,12 @@ def sign_up():
             return render_template('sign_up.html', message='Incorect email or username')
     return render_template('sign_up.html', message=message)  
 
+def check_password(password, hash_password):
+    if hash_password:
+        if bcrypt.checkpw(password.encode(), hash_password):
+            return True
+    return False
+
 @app.route('/sign_in/', methods=['post', 'get'])
 def login():
     message = ''    
