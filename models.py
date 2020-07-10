@@ -1,13 +1,15 @@
 from config import db
 from datetime import datetime
 
-class Users_info(db.Model):
+class UsersInfo(db.Model):
+    __tablename__ = 'UsersInfo'
     id = db.Column(db.Integer, primary_key = True)
     user_login = db.Column(db.String(64), index = True, unique = True)
     user_password = db.Column(db.String(120), index = True)
     email = db.Column(db.String(120),index = True, unique = True )
 
-class Machine_archive(db.Model):
+class MachineArchive(db.Model):
+    __tablename__ = 'MachineArchive'
     id = db.Column(db.Integer, primary_key = True)
     machine_id = db.Column(db.Integer, index = True)
     name = db.Column(db.String(64), index = True)
@@ -18,12 +20,23 @@ class Machine_archive(db.Model):
     modifiedBy = db.Column(db.String(64), default = "None", index = True)
     modifiedOn = db.Column(db.String(64), default = "None", index = True)
 
-class Machines(db.Model):
+    def __init__(self, machine):
+        self.machine_id = machine.id
+        self.name = self.name
+        self.description = self.description
+        self.type_value = self.type_value
+        self.createdBy = self.createdBy
+        self.createdOn = self.createdOn
+        self.modifiedBy = self.modifiedBy
+        self.modifiedOn = self.modifiedOn
+
+class Machine(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64), index = True)
     description = db.Column(db.String(120), index = True)
     typeid = db.Column(db.Integer, db.ForeignKey('type.id'), index = True)
-    type_model = db.relationship("Type", backref=db.backref("type", uselist=False))
+    #!
+    type_model = db.relationship("Type", backref=db.backref("Type", uselist=False))
     createdBy = db.Column(db.String(64), index = True)
     createdOn = db.Column(db.String(64), index = True)
     modifiedBy = db.Column(db.String(64), default = "None", index = True)
@@ -38,11 +51,11 @@ class Machines(db.Model):
         return self 
 
     def __repr__(self):
-        return "<Machines {}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,self.description,self.typeid,self.createdOn,
+        return "<Machine {}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,self.description,self.typeid,self.createdOn,
         self.createdBy,self.modifiedOn,self.modifiedBy,self.type_model)
     
     def __eq__(self, other):
-        if isinstance(other, Machines):
+        if isinstance(other, Machine):
             if self.id == other.id and \
                 self.name == other.name  and \
                 self.description == other.description and \
