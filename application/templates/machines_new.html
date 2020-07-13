@@ -8,7 +8,12 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Add new machine</h1>
+        <h1>Add new machine</h1> 
+        <div class="col text-center text-monospace">
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
+        </div>
         <form method="post">
             <input type="text" name="name" id="name" class="form-control" placeholder="Input name"><br>
             <textarea name="description" id="description" class="form-control" placeholder="Input description"></textarea> <br>

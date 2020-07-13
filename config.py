@@ -2,21 +2,21 @@ import os
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
+
 class Config(object):
+    basedir = os.path.abspath(os.path.dirname(__file__))
     DEBUG = False
     TESTING = False
+    TRACK_MODIFICATIONS = False
     DATABASE_URI = 'sqlite:///'
     SECRET_KEY = 'hard to guess string'#
-    basedir = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'bd.db')
 
-class ProductionConfig(Config):
-    DATABASE_URI = 'mysql://user@localhost/foo'
-
-class DevelopmentConfig(Config):
-    DEBUG = True
 
 class TestingConfig(Config):
-    DB_SERVER = 'localhost'
-    TRACK_MODIFICATIONS = False
     DEBUG = True
+    TESTING = True
     DATABASE_URI = 'sqlite:///' + os.path.join(Config.basedir, 'bd.db')
+
+
+

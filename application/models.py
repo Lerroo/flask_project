@@ -1,7 +1,8 @@
 # from config import db, app
 from datetime import datetime
 
-from application import db
+db = SQLAlchemy(app)
+db.create_all()
 
 class UsersInfo(db.Model):
     __tablename__ = 'users_info'
