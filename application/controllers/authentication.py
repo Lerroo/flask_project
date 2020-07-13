@@ -2,12 +2,15 @@ from flask import Flask, request, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 import bcrypt
+import os
+import sys
 
 from datetime import datetime
 import logging
 
-from models import UsersInfo, Machine, Type, MachineArchive
-from application import app, db
+sys.path.append(os.path.abspath('../../'))
+from application.models import UsersInfo, Machine, Type, MachineArchive
+from application import db, app
 
 
 def check_password(password, hash_password):

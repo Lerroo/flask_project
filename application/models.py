@@ -1,8 +1,10 @@
 # from config import db, app
 from datetime import datetime
+import os
+import sys
 
-db = SQLAlchemy(app)
-db.create_all()
+sys.path.append(os.path.abspath('../'))
+from application import db
 
 class UsersInfo(db.Model):
     __tablename__ = 'users_info'
@@ -25,13 +27,13 @@ class MachineArchive(db.Model):
 
     def __init__(self, machine):
         self.machine_id = machine.id
-        self.name = self.name
-        self.description = self.description
-        self.type_value = self.type_value
-        self.createdBy = self.createdBy
-        self.createdOn = self.createdOn
-        self.modifiedBy = self.modifiedBy
-        self.modifiedOn = self.modifiedOn
+        self.name = machine.name
+        self.description = machine.description
+        self.type_value = machine.type_model.value
+        self.createdBy = machine.createdBy
+        self.createdOn = machine.createdOn
+        self.modifiedBy = machine.modifiedBy
+        self.modifiedOn = machine.modifiedOn
 
 class Machine(db.Model):
     __tablename__ = 'machines'

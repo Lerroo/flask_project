@@ -3,9 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 from datetime import datetime
 import logging
+import os
+import sys
 
-from models import UsersInfo, Machine, Type, MachineArchive
-from application import app
+sys.path.append(os.path.abspath('../../'))
+from application.models import UsersInfo, Machine, Type, MachineArchive
+from application import db, app
 
 
 def now_time_iso():
@@ -97,7 +100,7 @@ def machines_info(id):
             try:
                 db.session.commit()
             except:
-                logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
+                logging.error("#500. An error has happened!!({})".format(now_time_iso()[11:]))
                 abort(500)
             logging.info("User {} changed info #{}({})".format(name_usr, id, now_time_iso()[11:]))
             return redirect(url_for('machines', _external=True))

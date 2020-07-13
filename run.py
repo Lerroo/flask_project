@@ -1,12 +1,7 @@
-from flask import Flask, request, redirect, url_for, abort, render_template, session
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
-import bcrypt
-import json
+from flask import Flask, render_template
 from datetime import datetime
 import logging
 
-from models import UsersInfo, Machine, Type, MachineArchive
 from application import db, app
 from application.controllers import authentication, machines
 
