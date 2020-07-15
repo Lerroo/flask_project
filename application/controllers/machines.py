@@ -57,6 +57,13 @@ def new():
 def machines_del(id):
     machine = Machine.query.get_or_404(id)
     try:
+        db.session.add(MachineArchive(machine))
+        db.session.commit()
+        logging.info("Archive update ({})".format(now_time_iso()[11:]))
+    except:
+        logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
+        abort(500)
+    try:
         db.session.delete(machine)
         db.session.commit()
         return redirect(url_for('machines'))
