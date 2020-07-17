@@ -12,12 +12,6 @@ from application import db, app
 from main_functions import now_time_iso, ValidationException, convert_to_list_values
 
 
-
-
-def name_session_check():
-    pass
-
-
 @app.route('/machines', methods=['get'])
 def machines():
     items = Machine.query.all() 
@@ -33,8 +27,8 @@ def new_get():
 def new():
     try:
         machine_value = convert_to_list_values(request.form)
-        machine = machine_value.extend([session.get('name_usr'), now_time_iso()])
-        Machine(*machine).add()
+        machine_value.extend([session.get('name_usr'), now_time_iso()])
+        Machine(*machine_value).add()
         return redirect(url_for('machines'))  
     except ValidationException as error:
         type_list = Type.query.all()
@@ -44,26 +38,9 @@ def new():
 @app.route('/machine/del/<int:id>', methods=['get'])
 def machines_del(id):
     machine = Machine.query.get_or_404(id)
-<<<<<<< HEAD
     MachineArchive(machine).add()
     machine.delete()
-    return redirect(url_for('machines'))  
-=======
-    try:
-        db.session.add(MachineArchive(machine))
-        db.session.commit()
-        logging.info("Archive update ({})".format(now_time_iso()[11:]))
-    except:
-        logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
-        abort(500)
-    try:
-        db.session.delete(machine)
-        db.session.commit()
-        return redirect(url_for('machines'))
-    except:
-        logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
-        abort(500)     
->>>>>>> 69e095aaefd848d07eda16313c07d1a4abd9178c
+    return redirect(url_for('machines', _external=True))    
 
 
 @app.route('/machine/<int:id>', methods=['get'])
@@ -80,14 +57,11 @@ def machines_info_get(id):
 def machines_info(id):     
     machine = Machine.query.get_or_404(id)
     new_machine = Machine(request.form['name'], request.form['description'], 
-        int(request.form['select_type']))
+        int(request.form['select_type']), modifiedBy=session.get('name_usr'),
+            modifiedOn=now_time_iso())
     if machine != new_machine:
         MachineArchive(machine).add()
-        machine.update(new_machine.name,
-            new_machine.description,
-            new_machine.typeid,
-            session.get('name_usr'),
-            now_time_iso())        
+        machine.update(new_machine)    
         return redirect(url_for('machines', _external=True))
     else:
         return redirect(url_for('machines', _external=True))

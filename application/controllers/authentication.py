@@ -1,5 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, redirect, render_template, url_for
 from sqlalchemy import exc
 
 import bcrypt

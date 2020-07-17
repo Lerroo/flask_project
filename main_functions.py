@@ -54,19 +54,11 @@ def email_and_password_valid(email, password):
             logging.info("User {} log in".format(session.get('name_usr')))
             session.modified = True
             return True
-    return False
-            
-def form_valid(values_form):
-    
-    return True
-    
+    return False  
         
 
 def now_time_iso():
     return datetime.now().isoformat(sep='T', timespec="seconds")
-
-def form_validate():
-    pass
 
 
 @app.errorhandler(401)

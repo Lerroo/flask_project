@@ -1,7 +1,8 @@
 
 import os
 import sys
-from flask import Flask, request, redirect, url_for, abort, render_template, session
+from flask import Flask, request, abort, render_template, session
+
 
 import logging
 from sqlalchemy import exc
@@ -21,18 +22,22 @@ class UsersInfo(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
+            #time iso
+            logging.info("Add new user {} ({})".format(self.user_login, now_time_iso()[11:]))
         except exc.IntegrityError as err:
             s = str(err)
             # message должно лежать поле которое error
             db.session.rollback()
+            logging.error("#500. An error IntegrityError has happened add method!({})".format(now_time_iso()[11:]))
             return render_template('sign_up.html', message='unique err')
-        
+        except exc.OperationalError as err:
+            logging.error("#500. An error OperationalError has happened add method!({})".format(now_time_iso()[11:]))
+            return render_template('404.html',message=err)
 
-    def __init__(self, email, login, password):
+    def __init__(self, login, password, email):
         self.user_login = login
         self.user_password = password
         self.email = email
-
 
     def __repr__(self):
         return "<UsersInfo {}\n{}\n{}\n{}>".format(self.id, self.user_login,self.user_password,
@@ -84,25 +89,26 @@ class Machine(db.Model):
     modifiedBy = db.Column(db.String(64), default = "None", index = True)
     modifiedOn = db.Column(db.String(64), default = "None", index = True)
 
-    def __init__(self, name, description, typeid, createdBy=None, createdOn=None, id=None):
+    def __init__(self, name, description, typeid, createdBy=None, createdOn=None, id=None, modifiedBy=None, modifiedOn=None):
         self.id = id
         self.name = name
         self.description = description
         self.typeid = typeid
         self.createdBy = createdBy
         self.createdOn = createdOn
-        # logging.info("User {} requested information #{}({})".format(createdBy, id, now_time_iso()[11:]))
-
-    def update(self, name, description, typeid, modifiedBy, modifiedOn):
-        self.name = name
-        self.description = description
-        self.typeid = typeid
         self.modifiedBy = modifiedBy
         self.modifiedOn = modifiedOn
+
+    def update(self, new_machine):
+        self.name = new_machine.name
+        self.description = new_machine.description
+        self.typeid = new_machine.typeid
+        self.modifiedBy = new_machine.modifiedBy
+        self.modifiedOn = new_machine.modifiedOn
         try:
             #
             db.session.commit()
-            logging.info("User {} changed info #{}({})".format(modifiedBy, self.id, now_time_iso()[11:]))
+            logging.info("User {} changed info #{}({})".format(self.modifiedBy, self.id, now_time_iso()[11:]))
             return self 
         except:
             logging.error("#500. An error has happened!!({})".format(now_time_iso()[11:]))
@@ -128,11 +134,11 @@ class Machine(db.Model):
             db.session.delete(self)
             db.session.commit()
         except:
-            logging.error("#500. An error has happened delete method!({})".format(now_time_iso()[11:]))
+            logging.error("#500. An error has happened delete method!({}){}".format(now_time_iso()[11:], 'ho'))
             abort(500) 
 
     def __repr__(self):
-        return "<Machine {}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,self.description,self.typeid,self.createdOn,
+        return "<Machine {}\nname {}\n desc {}\n typeid{}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,self.description,self.typeid,self.createdOn,
         self.createdBy,self.modifiedOn,self.modifiedBy,self.type_model)
     
     def __eq__(self, other):
