@@ -44,9 +44,26 @@ def new():
 @app.route('/machine/del/<int:id>', methods=['get'])
 def machines_del(id):
     machine = Machine.query.get_or_404(id)
+<<<<<<< HEAD
     MachineArchive(machine).add()
     machine.delete()
     return redirect(url_for('machines'))  
+=======
+    try:
+        db.session.add(MachineArchive(machine))
+        db.session.commit()
+        logging.info("Archive update ({})".format(now_time_iso()[11:]))
+    except:
+        logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
+        abort(500)
+    try:
+        db.session.delete(machine)
+        db.session.commit()
+        return redirect(url_for('machines'))
+    except:
+        logging.error("#500. An error has happened!({})".format(now_time_iso()[11:]))
+        abort(500)     
+>>>>>>> 69e095aaefd848d07eda16313c07d1a4abd9178c
 
 
 @app.route('/machine/<int:id>', methods=['get'])
