@@ -10,8 +10,6 @@ if __name__ == "__main__":
     file_name = 'logs/log_'+str(datetime.now().strftime("%Y-%m-%d"))+'.log'
     file_log = logging.FileHandler(file_name)
     console_out = logging.StreamHandler()
-    logging.basicConfig(
-        handlers=(file_log, console_out),
-        level=logging.INFO)
+    logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO)
     db.create_all()
     app.run()
