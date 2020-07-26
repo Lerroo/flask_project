@@ -5,6 +5,7 @@ import sys
 
 from application import db, app
 from application.controllers import authentication, machines
+from application.API import API
 
 if __name__ == "__main__":
     file_name = 'logs/log_'+str(datetime.now().strftime("%Y-%m-%d"))+'.log'

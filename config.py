@@ -6,7 +6,7 @@ class Config(object):
     basedir = os.path.abspath(os.path.dirname(__file__))
     DEBUG = True
     TESTING = True
-    TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'hard to guess string'#
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'bd.db')
 

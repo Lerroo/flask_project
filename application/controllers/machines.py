@@ -8,17 +8,24 @@ import sys
 
 sys.path.append(os.path.abspath('../../'))
 from application import db, app
-from application.models import Machine, Type, MachineArchive
+from application.models import Machine, Type, MachineArchive, UsersInfo
 from application.services.utils import type_list, ValidationException, now_time_iso, \
-convert_to_dict_values, session_name
-from application.services.machine import convert_to_dict_machine
+valudate_values, session_name
+
 
 
 @app.route('/machines', methods=['get'])
 def machines():
     if session_name():
         items = Machine.query.all() 
-        return render_template('machines.html', items=items)
+        user_t = db.session.query(UsersInfo.token) \
+            .filter(UsersInfo.user_login == session.get('name_usr')) \
+            .first()
+        user_inf = {
+            'token':user_t[0],
+            'name':session.get('name_usr')
+        }
+        return render_template('machines.html', items=items, user_inf=user_inf)
 
 @app.route('/machine/new/', methods=['get'])
 def new_get():
@@ -29,10 +36,12 @@ def new_get():
 @app.route('/machine/new/', methods=['post'])
 def new():
     try:
-        machine_dict = convert_to_dict_values(request.form.to_dict())
-        new_v = {'createdBy':str(session.get('name_usr')), 'createdOn':now_time_iso()}
-        Machine(**convert_to_dict_machine(machine_dict, new_v)).add()
-        return redirect(url_for('machines'))  
+        machine_dict = request.form.to_dict()
+        if valudate_values(machine_dict):
+            new_v = {'createdBy':str(session.get('name_usr')), 'createdOn':now_time_iso()}
+            machine_dict.update(new_v)
+            Machine(**machine_dict).add()
+            return redirect(url_for('machines'))  
     except ValidationException as error:
         return render_template("machines_new.html", type_list=type_list, message=error)
   
@@ -56,11 +65,14 @@ def machines_info_get(id):
 @app.route('/machine/<int:id>', methods=['post'])
 def machines_info(id):     
     machine = Machine.query.get_or_404(id)
-    new_v = {'modifiedBy':session.get('name_usr'), 'modifiedOn':now_time_iso()}
-    new_machine = Machine(**convert_to_dict_machine(request.form.to_dict(), new_v))
-    if machine != new_machine:
-        MachineArchive(machine).add()
-        machine.update(new_machine)    
-        return redirect(url_for('machines', _external=True))
-    else:
-        return redirect(url_for('machines', _external=True))
+    machine_dict = request.form.to_dict()
+    if valudate_values(machine_dict):
+        new_v = {'modifiedBy':session.get('name_usr'), 'modifiedOn':now_time_iso()}
+        machine_dict.update(new_v)
+        new_machine = Machine(**machine_dict)
+        if machine != new_machine:
+            MachineArchive(machine).add()
+            machine.update(new_machine)    
+            return redirect(url_for('machines', _external=True))
+        else:
+            return redirect(url_for('machines', _external=True))
