@@ -2,3 +2,5 @@
 *.sqbpro
 *.pyc
 *.log
+*.db-journal
+.idea
