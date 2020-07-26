@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, abort, g, session
 import os
 import sys
 import curl
+import json
 from flask_httpauth import HTTPBasicAuth 
 
 auth = HTTPBasicAuth()
@@ -15,9 +16,9 @@ from application.models import Machine, Type, MachineArchive, MachineMetric, Use
 #auth.login_required
 #json err
 
-#remove-item alias:\curl
+# remove-item alias:\curl
 
-#curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X POST -d '{"""name""":"""name""", """description""":"""description""", """select_type""":1}' http://localhost:5000/api/machine
+# curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X POST -d '{"""name""":"""name""", """description""":"""description""", """select_type""":1}' http://localhost:5000/api/machine
 @app.route('/api/machine', methods=['POST'])
 @auth.login_required
 def api_new_machine():
@@ -44,13 +45,13 @@ def api_get_machines():
     machines = Machine.query.all()
     return jsonify(machines=[machine.dict for machine in machines])
 
-#curl -i http://127.0.0.1:5000/api/machine/54
+# curl -i http://127.0.0.1:5000/api/machine/58
 @app.route('/api/machine/<int:machine_id>', methods=['GET'])
 def api_get_machine(machine_id):
     """show id"""
     return jsonify(machine=Machine.query.get_or_404(machine_id).dict)
 
-#curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X PUT -d '{"""name""":"""name""", """description""":"""description""", """select_type""":"""1"""}' http://localhost:5000/api/machine/40
+# curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X PUT -d '{"""name""":"""name""", """description""":"""description""", """select_type""":"""1"""}' http://localhost:5000/api/machine/40
 @app.route('/api/machine/<int:machine_id>', methods=['PUT'])
 @auth.login_required
 def api_update_machine(machine_id):
@@ -68,7 +69,7 @@ def api_update_machine(machine_id):
         abort(401)
     return jsonify(machine=old_m.dict)
 
-#curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X DELETE http://localhost:5000/api/machine/40
+# curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X DELETE http://localhost:5000/api/machine/40
 @app.route('/api/machine/<int:machine_id>', methods=['DELETE'])
 @auth.login_required
 def api_delete_machine(machine_id):
@@ -94,7 +95,7 @@ def verify_password(token, password):
     session['user_id'] = user.id
     return True
 
-#curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X POST -d '{"""metrics""":"""metrics"""}' http://localhost:5000/api/machine/40/metric
+# curl -i -u 1646875ea2344fbb809adbcb32570b04:unused -H "Content-Type: application/json" -X POST -d '{"""data""":"""data"""}' http://localhost:5000/api/machine/59/metric
 @app.route('/api/machine/<int:machine_id>/metric', methods=['POST'])
 @auth.login_required
 def api_new_metric(machine_id):
@@ -106,6 +107,7 @@ def api_new_metric(machine_id):
             'time_stamp':now_time_iso()
         }
         json_d.update(new_v)
+        json_d['data'] = json.dumps(json_d)
         MachineMetric(**json_d).add()
     else:
         json_d = {
