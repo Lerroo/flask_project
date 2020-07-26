@@ -1,6 +1,8 @@
 from flask import Flask, request, redirect, url_for, abort, render_template, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
+import sqlalchemy
+from sqlalchemy import exc, func
+
 from datetime import datetime
 import logging
 import os
@@ -8,7 +10,7 @@ import sys
 
 sys.path.append(os.path.abspath('../../'))
 from application import db, app
-from application.models import Machine, Type, MachineArchive, UsersInfo
+from application.models import Machine, Type, MachineArchive, UsersInfo, MachineMetric
 from application.services.utils import type_list, ValidationException, now_time_iso, \
 valudate_values, session_name
 
@@ -17,7 +19,6 @@ valudate_values, session_name
 @app.route('/machines', methods=['get'])
 def machines():
     if session_name():
-        items = Machine.query.all() 
         user_t = db.session.query(UsersInfo.token) \
             .filter(UsersInfo.user_login == session.get('name_usr')) \
             .first()
@@ -25,7 +26,12 @@ def machines():
             'token':user_t[0],
             'name':session.get('name_usr')
         }
-        return render_template('machines.html', items=items, user_inf=user_inf)
+        machine_id_counts = db.session.query(MachineMetric.machine_id, func.count('id') \
+            .label('count')).group_by(MachineMetric.machine_id).subquery()
+        query = db.session.query(Machine, machine_id_counts.c.count) \
+            .outerjoin(machine_id_counts, machine_id_counts.c.machine_id == Machine.id) \
+            .all()
+        return render_template('machines.html', items=query, user_inf=user_inf)
 
 @app.route('/machine/new/', methods=['get'])
 def new_get():
@@ -76,3 +82,10 @@ def machines_info(id):
             return redirect(url_for('machines', _external=True))
         else:
             return redirect(url_for('machines', _external=True))
+
+
+@app.route('/machine/<int:id>/metrics', methods=['get'])
+def machines_info_get_metrics(id):
+    if session_name():
+        metrics = MachineMetric.query.filter(MachineMetric.machine_id == id).all()
+        return render_template("metrics.html", metrics=metrics)
