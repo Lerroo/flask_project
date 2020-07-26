@@ -4,7 +4,7 @@ from flask import Flask, request, abort, render_template, session, g
 
 import logging
 from sqlalchemy import exc
-
+import json
 sys.path.append(os.path.abspath('../'))
 from application import db, app
 
@@ -187,15 +187,15 @@ class Type(db.Model):
 class MachineMetric(db.Model):
     __tablename__ = 'machine_metric'
     id = db.Column(db.Integer, primary_key=True)
-    machine_id = db.Column(db.Integer, index=True)
-    user_id = db.Column(db.Integer, index=True)
-    metrics = db.Column(db.String(64), index=True)
+    machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users_info.id'), index=True)
+    data = db.Column(db.String(64), index=True)
     time_stamp = db.Column(db.String(64), index=True)
 
-    def __init__(self, machine_id, metrics, user_id, time_stamp):
+    def __init__(self, machine_id, data, user_id, time_stamp):
         self.machine_id = machine_id
         self.user_id = user_id
-        self.metrics = metrics
+        self.data = json.dumps(json.loads(data), indent=4, sort_keys=True)
         self.time_stamp = time_stamp
 
     def add(self):
