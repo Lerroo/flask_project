@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, request, abort, render_template, session
+from flask import Flask, request, abort, render_template, session, g
 
 import logging
 from sqlalchemy import exc
@@ -15,6 +15,7 @@ class UsersInfo(db.Model):
     user_login = db.Column(db.String(64), index=True, unique=True)
     user_password = db.Column(db.String(120), index=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    token = db.Column(db.String(120), index=True, unique=True)
 
     def add(self):
         try:
@@ -29,10 +30,18 @@ class UsersInfo(db.Model):
             logging.error("#500. An error OperationalError(database locked) has happened add method!")
             abort(500)
 
-    def __init__(self, user, password, email):
+    @staticmethod
+    def verify_auth_token(token):
+        user_id = db.session.query(UsersInfo.id, UsersInfo.user_login) \
+            .filter(UsersInfo.token == token) \
+            .first()
+        return user_id
+
+    def __init__(self, user, password, email, token):
         self.user_login = user
         self.user_password = password
         self.email = email
+        self.token = token
 
     def __repr__(self):
         return "<UsersInfo {}\n{}\n{}\n{}>".format(self.id, self.user_login, self.user_password,
@@ -138,10 +147,22 @@ class Machine(db.Model):
             logging.error("#500. An error has happened delete method!{}", 'ho')
             abort(500)
 
+
+    @property
+    def dict(self):
+        return {'id':self.id,
+            'name':self.name, 
+            'description':self.description, 
+            'typeid':self.typeid, 
+            'createdBy':self.createdBy, 
+            'createdOn':self.createdOn, 
+            'modifiedBy':self.modifiedBy, 
+            'modifiedOn':self.modifiedOn}
+
     def __repr__(self):
-        return "<Machine {}\nname {}\n desc {}\n typeid {}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, type(self.name),
-                                                                                          type(self.description),
-                                                                                          type(self.typeid),
+        return "<Machine {}\nname {}\n desc {}\n typeid {}\n{}\n{}\n{}\n{}\n{}\n>".format(self.id, self.name,
+                                                                                          self.description,
+                                                                                          self.typeid,
                                                                                           self.createdOn,
                                                                                           self.createdBy,
                                                                                           self.modifiedOn,
@@ -161,3 +182,31 @@ class Type(db.Model):
     __tablename__ = 'type'
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String(64), index=True)
+
+
+class MachineMetric(db.Model):
+    __tablename__ = 'machine_metric'
+    id = db.Column(db.Integer, primary_key=True)
+    machine_id = db.Column(db.Integer, index=True)
+    user_id = db.Column(db.Integer, index=True)
+    metrics = db.Column(db.String(64), index=True)
+    time_stamp = db.Column(db.String(64), index=True)
+
+    def __init__(self, machine_id, metrics, user_id, time_stamp):
+        self.machine_id = machine_id
+        self.user_id = user_id
+        self.metrics = metrics
+        self.time_stamp = time_stamp
+
+    def add(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            logging.info("#{} add new metric at {}".format(
+                self.user_id, self.time_stamp))
+        except exc.OperationalError as err:
+            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            abort(500)
+        except:
+            logging.error("#500. An error has happened MachineMetric().add method!")
+            abort(500)
