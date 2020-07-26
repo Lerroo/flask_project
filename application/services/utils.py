@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, render_template, session
+from flask import Flask, request, abort, render_template, session, make_response
 
 from datetime import datetime
 import sys
@@ -29,11 +29,27 @@ def session_name():
     return True
 
 
-def convert_to_dict_values(values_form):
-    for k, v in values_form.items():
+def valudate_values(valudate_dict):
+    for k, v in valudate_dict.items():
         if v == '':
             raise (ValidationException(k))
-    return values_form
+    return valudate_dict
+
+
+def json_validate(dict_json, dict_len):
+    if valudate_values(dict_json) and len(dict_json)==dict_len:
+        return dict_json
+    return False
+
+
+
+
+
+
+
+@app.errorhandler(400)
+def forbidden(error):
+    return make_response('Bad Request', 400)
 
 
 @app.errorhandler(401)
