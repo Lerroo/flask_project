@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task1</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="row w-75 mx-auto" >
+        <div class="col text-white w-50 p-3">
+            <div class="mx-auto">
+                <h3 class="text-monospace text-dark w-75 float-left">Detail metrics about machine #{{metrics[0].machine_id}}</h3>
+                <a href="../../../machines" class="btn btn-warning w-25 p-1 float-right">Back</a>
+            </div>
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">user_id</th>
+                    <th scope="col">metrics</th>
+                    <th scope="col">time_stamp</th>
+                </tr>
+                </thead>
+                {% for metric in metrics %}
+                <tr>
+                    <td>{{ metric.id }}</td>
+                    <td>{{ metric.user_id}}</td>
+                    <td style="height: 150px">
+                        <textarea class="form-control h-100">{{metric.data}}</textarea>
+                    </td>
+                    <td>{{ metric.time_stamp }}</td>
+                </tr>
+                {% endfor %}
+            </table>  
+        </div>
+    </div>   
+</body>
+</html>
