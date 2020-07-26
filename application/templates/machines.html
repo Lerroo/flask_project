@@ -19,20 +19,23 @@
                     <th scope="col">name</th>
                     <th scope="col">type</th>
                     <th scope="col">modifiedOn</th>
+                    <th scope="col">N metrics</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
-                {% for item in items %}
+                {% for machine, machine_id_counts  in items %}
                 <tr>
+                    <td>{{ machine.id }}</td>
+                    <td>{{ machine.name }}</td>
+                    <td>{{ machine.type_model.value }}</td>
+                    <td>{{ machine.modifiedOn }}</td>
                     <td>
-                        <a class="text-monospace text-dark">{{ item.id }}</a>
+                        <a href="/machine/{{machine.id}}/metrics" class="text-monospace text-dark">{{ machine_id_counts }}</a>
                     </td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.type_model.value }}</td>
-                    <td>{{ item.modifiedOn }}</td>
-                    <td><a href="/machine/{{item.id}}" class="btn btn-warning w-100 p-1">Details</a>
-                        <a href="/machine/del/{{item.id}}" class="btn btn-danger w-100 p-1 mb-2">Delete</a>
-                    </form> </td>
+                    <td>
+                        <a href="/machine/{{machine.id}}" class="btn btn-warning w-100 p-1">Details</a>
+                        <a href="/machine/del/{{machine.id}}" class="btn btn-danger w-100 p-1 mb-2">Delete</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>  
