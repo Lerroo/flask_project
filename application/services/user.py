@@ -2,6 +2,8 @@ import os
 import sys
 import logging
 import bcrypt
+import uuid
+
 
 from flask import session
 
@@ -17,6 +19,8 @@ def check_password(password, hash_password):
             return True
     return False
 
+def token_create(): 
+    return str(uuid.uuid4().hex)
 
 def email_and_password_valid(dict_v):
     email = dict_v['email']
@@ -37,6 +41,5 @@ def email_and_password_valid(dict_v):
 
 
 def password_enc(dict_v):
-    print(dict_v)
     dict_v['password'] = bcrypt.hashpw(dict_v.get('password').encode(), bcrypt.gensalt())
     return dict_v
