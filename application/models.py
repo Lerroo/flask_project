@@ -9,13 +9,14 @@ sys.path.append(os.path.abspath('../'))
 from application import db, app
 
 
+
 class UsersInfo(db.Model):
     __tablename__ = 'users_info'
     id = db.Column(db.Integer, primary_key=True)
-    user_login = db.Column(db.String(64), index=True, unique=True)
-    user_password = db.Column(db.String(120), index=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    token = db.Column(db.String(120), index=True, unique=True)
+    user_login = db.Column(db.String(64), unique=True)
+    user_password = db.Column(db.String(120))
+    email = db.Column(db.String(120), unique=True)
+    token = db.Column(db.String(120), unique=True)
 
     def add(self):
         try:
@@ -24,10 +25,10 @@ class UsersInfo(db.Model):
             logging.info("Add new user {} ".format(self.user_login))
         except exc.IntegrityError as err:
             db.session.rollback()
-            logging.error("#500. An error IntegrityError has happened add method!")
+            logging.error("#500. An error IntegrityError")
             return render_template('sign_up.html', message='unique err')
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
 
     @staticmethod
@@ -52,13 +53,13 @@ class MachineArchive(db.Model):
     __tablename__ = 'machine_archive'
     id = db.Column(db.Integer, primary_key=True)
     machine_id = db.Column(db.Integer, index=True)
-    name = db.Column(db.String(64), index=True)
-    description = db.Column(db.String(120), index=True)
-    type_value = db.Column(db.String(64), index=True)
-    createdBy = db.Column(db.String(64), index=True)
-    createdOn = db.Column(db.String(64), index=True)
-    modifiedBy = db.Column(db.String(64), default="None", index=True)
-    modifiedOn = db.Column(db.String(64), default="None", index=True)
+    name = db.Column(db.String(64))
+    description = db.Column(db.String(120))
+    type_value = db.Column(db.String(64))
+    createdBy = db.Column(db.String(64))
+    createdOn = db.Column(db.String(64))
+    modifiedBy = db.Column(db.String(64), default="None")
+    modifiedOn = db.Column(db.String(64), default="None")
 
     def __init__(self, machine):
         self.machine_id = machine.id
@@ -74,12 +75,12 @@ class MachineArchive(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            logging.info("Archive update ")
+            logging.info("Archive {} add machine".format(self.id))
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
         except:
-            logging.error("#500. An error has happened add method!")
+            logging.error("#500. Server error!")
             abort(500)
         return self
 
@@ -87,14 +88,14 @@ class MachineArchive(db.Model):
 class Machine(db.Model):
     __tablename__ = 'machines'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
-    description = db.Column(db.String(120), index=True)
+    name = db.Column(db.String(64))
+    description = db.Column(db.String(120))
     typeid = db.Column(db.Integer, db.ForeignKey('type.id'), index=True)
     type_model = db.relationship("Type", backref=db.backref("Type", uselist=False))
-    createdBy = db.Column(db.String(64), index=True)
-    createdOn = db.Column(db.String(64), index=True)
-    modifiedBy = db.Column(db.String(64), default="None", index=True)
-    modifiedOn = db.Column(db.String(64), default="None", index=True)
+    createdBy = db.Column(db.String(64))
+    createdOn = db.Column(db.String(64))
+    modifiedBy = db.Column(db.String(64), default="None")
+    modifiedOn = db.Column(db.String(64), default="None")
 
     def __init__(self, name, description, select_type, createdBy=None, createdOn=None, id=None, modifiedBy=None,
                  modifiedOn=None):
@@ -117,10 +118,10 @@ class Machine(db.Model):
             db.session.commit()
             logging.info("User {} changed info #{}".format(self.modifiedBy, self.id))
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
         except:
-            logging.error("#500. An error has happened!!")
+            logging.error("#500. Server error!")
             abort(500)
 
     def add(self):
@@ -130,21 +131,22 @@ class Machine(db.Model):
             logging.info("{} add new machine at {}".format(
                 self.createdBy, self.createdOn))
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
         except:
-            logging.error("#500. An error has happened add method!")
+            logging.error("#500. Server error!")
             abort(500)
 
     def delete(self):
         try:
             db.session.delete(self)
             db.session.commit()
+            logging.warning("{} delete {} machine".format(session['name_usr'], self.id))
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
         except:
-            logging.error("#500. An error has happened delete method!{}", 'ho')
+            logging.error("#500. Server error!")
             abort(500)
 
 
@@ -181,7 +183,7 @@ class Machine(db.Model):
 class Type(db.Model):
     __tablename__ = 'type'
     id = db.Column(db.Integer, primary_key=True)
-    value = db.Column(db.String(64), index=True)
+    value = db.Column(db.String(64))
 
 
 class MachineMetric(db.Model):
@@ -189,8 +191,8 @@ class MachineMetric(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users_info.id'), index=True)
-    data = db.Column(db.String(64), index=True)
-    time_stamp = db.Column(db.String(64), index=True)
+    data = db.Column(db.String(64))
+    time_stamp = db.Column(db.String(64))
 
     def __init__(self, machine_id, data, user_id, time_stamp):
         self.machine_id = machine_id
@@ -202,11 +204,10 @@ class MachineMetric(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            logging.info("#{} add new metric at {}".format(
-                self.user_id, self.time_stamp))
+            logging.info("#{} add new metric {}".format(self.user_id, self.id))
         except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked) has happened add method!")
+            logging.error("#500. An error OperationalError(database locked)")
             abort(500)
         except:
-            logging.error("#500. An error has happened MachineMetric().add method!")
+            logging.error("#500. Server error!")
             abort(500)
