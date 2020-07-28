@@ -88,5 +88,7 @@ def machines_info(id):
 def machines_info_get_metrics(id):
     if check_page_accses():
         metrics = MachineMetric.query.filter(MachineMetric.machine_id == id).all()
+        if not metrics:
+            return redirect(url_for('machines', _external=True))
         return render_template("metrics.html", metrics=metrics)
     else: abort(401)
