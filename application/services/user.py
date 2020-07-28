@@ -37,13 +37,15 @@ def validate_email_and_password(dict_v):
     raise (ValidationException('log_err'))
 
 
-def save_user_to_session (user):
+def save_user_to_session(user):
     session['name_usr'] = user
     logging.info("User {} log in".format(user))
     session.modified = True
-    
+
+def encrypt_password(passw):
+    return bcrypt.hashpw(passw.encode(), bcrypt.gensalt())
 
 def prepare_user(dict_v):
-    dict_v['password'] = bcrypt.hashpw(dict_v.get('password').encode(), bcrypt.gensalt())
+    dict_v['password'] = encrypt_password(dict_v['password'])
     dict_v.update({'token':token_create()})
     return dict_v
