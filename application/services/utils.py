@@ -7,6 +7,19 @@ import os
 from ..db_app import app, db
 from ..models import Type
 
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class TypeAll(metaclass=Singleton):
+    value = None
+    def get(self):
+        if self.value is None:
+            self.value = Type.query.all()
+        return self.value
 
 class ValidationException(Exception):
     def __init__(self, err):

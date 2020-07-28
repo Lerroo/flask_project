@@ -3,7 +3,6 @@ from datetime import datetime
 import logging
 import sys
 
-
 from application.services import utils
 from application.controllers import authentication, machines
 from application.db_app import app, db
@@ -17,3 +16,6 @@ if __name__ == "__main__":
     logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO, format=format_stdout, datefmt='%d-%b-%y')
     db.create_all()
     app.run()
+
+
+

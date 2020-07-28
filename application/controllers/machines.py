@@ -8,36 +8,32 @@ import logging
 import os
 import sys
 
-
 from ..db_app import db, app
 from ..models import Machine, Type, MachineArchive, UsersInfo, MachineMetric
-from ..services.utils import type_list, ValidationException, now_time_iso, \
-    valudate_values, check_page_accses
-
+from ..services.utils import ValidationException, now_time_iso, \
+    valudate_values, check_page_accses, TypeAll
 
 
 @app.route('/machines', methods=['get'])
 def machines():
     if check_page_accses():
-        user_t = db.session.query(UsersInfo.token) \
-            .filter(UsersInfo.user_login == session.get('name_usr')) \
-            .first()
-        user_inf = {
-            'token':user_t[0],
-            'name':session.get('name_usr')
-        }
         machine_id_counts = db.session.query(MachineMetric.machine_id, func.count('id') \
             .label('count')).group_by(MachineMetric.machine_id).subquery()
         query = db.session.query(Machine, machine_id_counts.c.count) \
             .outerjoin(machine_id_counts, machine_id_counts.c.machine_id == Machine.id) \
             .all()
+        user_t = db.session.query(UsersInfo.token) \
+            .filter(UsersInfo.user_login == session.get('name_usr')) \
+            .first()
+        user_inf = {'token':user_t[0], 'name':session.get('name_usr')}
         return render_template('machines.html', items=query, user_inf=user_inf)
     else: abort(401)
+
 
 @app.route('/machine/new/', methods=['get'])
 def new_get():
     if check_page_accses():
-        return render_template('machines_new.html', type_list=type_list)
+        return render_template('machines_new.html', type_list=TypeAll().get())
     else: abort(401)
     
 
@@ -51,7 +47,7 @@ def new():
             Machine(**machine_dict).add()
             return redirect(url_for('machines'))  
     except ValidationException as error:
-        return render_template("machines_new.html", type_list=type_list, message=error)
+        return render_template("machines_new.html", type_list=TypeAll().get(), message=error)
   
 
 @app.route('/machine/del/<int:id>', methods=['get'])
@@ -68,7 +64,7 @@ def machines_del(id):
 def machines_info_get(id):
     if check_page_accses():
         machine = Machine.query.get_or_404(id)
-        return render_template("machines_info.html", machine=machine, type_list=type_list)
+        return render_template("machines_info.html", machine=machine, type_list=TypeAll().get())
     else: abort(401)
 
 
