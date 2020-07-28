@@ -4,9 +4,8 @@ from datetime import datetime
 import sys
 import os
 
-sys.path.append(os.path.abspath('../../'))
-from application import app
-from application.models import Type
+from ..db_app import app, db
+from ..models import Type
 
 type_list = Type.query.all()
 
@@ -40,11 +39,6 @@ def json_validate(dict_json, dict_len):
     if valudate_values(dict_json) and len(dict_json)==dict_len:
         return dict_json
     return False
-
-
-
-
-
 
 
 @app.errorhandler(400)

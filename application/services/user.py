@@ -7,10 +7,12 @@ import uuid
 
 from flask import session
 
-sys.path.append(os.path.abspath('../../'))
-import application.models as model
-from application.services.utils import ValidationException
-from application import db
+print('__file__={0:<35} | __name__={1:<20} | __package__={2:<20}'.format(__file__,__name__,str(__package__)))
+# from utils import ValidationException
+ 
+from ..models import MachineArchive, UsersInfo
+from ..db_app import db
+from .utils import ValidationException
 
 
 def check_password(password, hash_password):
@@ -25,9 +27,9 @@ def token_create():
 def email_and_password_valid(dict_v):
     email = dict_v['email']
     password = dict_v['password']
-    user = model.UsersInfo
-    query_email_and_password = db.session.query(user.user_login, user.email, user.user_password) \
-        .filter(user.email == email) \
+    u = UsersInfo
+    query_email_and_password = db.session.query(u.user_login, u.email, u.user_password) \
+        .filter(u.email == email) \
         .first()
     if query_email_and_password is not None:
         if check_password(password, query_email_and_password[2]):

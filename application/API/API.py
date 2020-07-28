@@ -7,10 +7,9 @@ from flask_httpauth import HTTPBasicAuth
 
 auth = HTTPBasicAuth()
 
-sys.path.append(os.path.abspath('../../'))
-from application import db, app
-from application.services.utils import now_time_iso, json_validate
-from application.models import Machine, Type, MachineArchive, MachineMetric, UsersInfo
+from ..db_app import app, db
+from ..models import Machine, Type, MachineArchive, MachineMetric, UsersInfo
+from ..services.utils import now_time_iso, json_validate
 
 #logging models
 #auth.login_required
@@ -118,3 +117,5 @@ def api_new_metric(machine_id):
 
 
 
+def apio():
+    return 'HUI'

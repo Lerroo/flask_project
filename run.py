@@ -3,9 +3,14 @@ from datetime import datetime
 import logging
 import sys
 
-from application import db, app
-from application.controllers import authentication, machines
-from application.API import API
+
+# import application.API.demo
+# import application.API.API as ap
+# import application.services.user
+# # import application.services.utils
+from application.db_app import app, db
+
+
 
 if __name__ == "__main__":
     file_name = 'logs/log_'+str(datetime.now().strftime("%Y-%m-%d"))+'.log'
@@ -15,3 +20,5 @@ if __name__ == "__main__":
     logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO, format=format_stdout, datefmt='%d-%b-%y')
     db.create_all()
     app.run()
+
+print(ap.apio())

@@ -5,9 +5,8 @@ from flask import Flask, request, abort, render_template, session, g
 import logging
 from sqlalchemy import exc
 import json
-sys.path.append(os.path.abspath('../'))
-from application import db, app
 
+from .db_app import app, db
 
 
 class UsersInfo(db.Model):
