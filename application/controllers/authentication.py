@@ -39,7 +39,7 @@ def login():
     try:
         form_dict = request.form.to_dict()
         if valudate_values(form_dict):
-            if email_and_password_valid(form_dict):
+            if validate_email_and_password(form_dict):
                 return redirect("/machines")
     except ValidationException as error:
         return render_template('sign_in.html', message=error)

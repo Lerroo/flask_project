@@ -16,8 +16,10 @@ from .utils import ValidationException
 def check_password(password, hash_password):
     return hash_password and bcrypt.checkpw(password.encode(), hash_password)
 
+
 def token_create(): 
     return str(uuid.uuid4().hex)
+
 
 def validate_email_and_password(dict_v):
     email = dict_v['email']
@@ -28,14 +30,18 @@ def validate_email_and_password(dict_v):
         .first()
     if stored_email_password  is not None:
         if check_password(password, stored_email_password[2]):
-            session['name_usr'] = stored_email_password[0]
-            logging.info("User {} log in".format(session.get('name_usr')))
-            session.modified = True
+            save_user_to_session(stored_email_password[0])
             return True
         else:
             raise (ValidationException('password'))
     raise (ValidationException('log_err'))
 
+
+def save_user_to_session (user):
+    session['name_usr'] = user
+    logging.info("User {} log in".format(user))
+    session.modified = True
+    
 
 def prepare_user(dict_v):
     dict_v['password'] = bcrypt.hashpw(dict_v.get('password').encode(), bcrypt.gensalt())
