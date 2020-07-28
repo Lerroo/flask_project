@@ -4,12 +4,9 @@ import logging
 import sys
 
 
-# import application.API.demo
-# import application.API.API as ap
-# import application.services.user
-# # import application.services.utils
+from application.services import utils
+from application.controllers import authentication, machines
 from application.db_app import app, db
-
 
 
 if __name__ == "__main__":
@@ -20,5 +17,3 @@ if __name__ == "__main__":
     logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO, format=format_stdout, datefmt='%d-%b-%y')
     db.create_all()
     app.run()
-
-print(ap.apio())

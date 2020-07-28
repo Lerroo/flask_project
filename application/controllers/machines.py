@@ -8,11 +8,11 @@ import logging
 import os
 import sys
 
-sys.path.append(os.path.abspath('../../'))
-from application import db, app
-from application.models import Machine, Type, MachineArchive, UsersInfo, MachineMetric
-from application.services.utils import type_list, ValidationException, now_time_iso, \
-valudate_values, session_name
+
+from ..db_app import db, app
+from ..models import Machine, Type, MachineArchive, UsersInfo, MachineMetric
+from ..services.utils import type_list, ValidationException, now_time_iso, \
+    valudate_values, session_name
 
 
 

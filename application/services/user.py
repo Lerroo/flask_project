@@ -42,6 +42,7 @@ def email_and_password_valid(dict_v):
     raise (ValidationException('log_err'))
 
 
-def password_enc(dict_v):
+def prepare_user(dict_v):
     dict_v['password'] = bcrypt.hashpw(dict_v.get('password').encode(), bcrypt.gensalt())
+    dict_v.update({'token':token_create()})
     return dict_v
