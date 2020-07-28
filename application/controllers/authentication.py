@@ -7,7 +7,7 @@ import sys
 import logging
 
 
-from ..services.user import prepare_user, email_and_password_valid, token_create
+from ..services.user import prepare_user, validate_email_and_password, token_create
 from ..services.utils import valudate_values, ValidationException
 from ..db_app import db, app
 from ..models import UsersInfo

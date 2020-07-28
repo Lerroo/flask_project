@@ -19,7 +19,7 @@ def check_password(password, hash_password):
 def token_create(): 
     return str(uuid.uuid4().hex)
 
-def email_and_password_valid(dict_v):
+def validate_email_and_password(dict_v):
     email = dict_v['email']
     password = dict_v['password']
     u = UsersInfo
