@@ -7,8 +7,6 @@ import uuid
 
 from flask import session
 
-print('__file__={0:<35} | __name__={1:<20} | __package__={2:<20}'.format(__file__,__name__,str(__package__)))
-# from utils import ValidationException
  
 from ..models import MachineArchive, UsersInfo
 from ..db_app import db
@@ -16,10 +14,7 @@ from .utils import ValidationException
 
 
 def check_password(password, hash_password):
-    if hash_password:
-        if bcrypt.checkpw(password.encode(), hash_password):
-            return True
-    return False
+    return hash_password and bcrypt.checkpw(password.encode(), hash_password)
 
 def token_create(): 
     return str(uuid.uuid4().hex)
