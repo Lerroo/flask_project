@@ -22,9 +22,9 @@ def now_time_iso():
     return datetime.now().isoformat(sep='T', timespec="seconds")
 
 
-def session_name():
+def check_page_accses():
     if not session.get('name_usr'):
-        abort(401)
+        False
     return True
 
 

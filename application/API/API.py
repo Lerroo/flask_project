@@ -114,8 +114,3 @@ def api_new_metric(machine_id):
         }
         abort(401)
     return jsonify(machine=json_d), 201
-
-
-
-def apio():
-    return 'HUI'

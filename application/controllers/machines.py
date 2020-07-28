@@ -12,13 +12,13 @@ import sys
 from ..db_app import db, app
 from ..models import Machine, Type, MachineArchive, UsersInfo, MachineMetric
 from ..services.utils import type_list, ValidationException, now_time_iso, \
-    valudate_values, session_name
+    valudate_values, check_page_accses
 
 
 
 @app.route('/machines', methods=['get'])
 def machines():
-    if session_name():
+    if check_page_accses():
         user_t = db.session.query(UsersInfo.token) \
             .filter(UsersInfo.user_login == session.get('name_usr')) \
             .first()
@@ -32,11 +32,13 @@ def machines():
             .outerjoin(machine_id_counts, machine_id_counts.c.machine_id == Machine.id) \
             .all()
         return render_template('machines.html', items=query, user_inf=user_inf)
+    else: abort(401)
 
 @app.route('/machine/new/', methods=['get'])
 def new_get():
-    if session_name():
+    if check_page_accses():
         return render_template('machines_new.html', type_list=type_list)
+    else: abort(401)
     
 
 @app.route('/machine/new/', methods=['post'])
@@ -54,18 +56,20 @@ def new():
 
 @app.route('/machine/del/<int:id>', methods=['get'])
 def machines_del(id):
-    if session_name():
+    if check_page_accses():
         machine = Machine.query.get_or_404(id)
         MachineArchive(machine).add()
         machine.delete()
         return redirect(url_for('machines', _external=True))    
+    else: abort(401)
 
 
 @app.route('/machine/<int:id>', methods=['get'])
 def machines_info_get(id):
-    if session_name():
+    if check_page_accses():
         machine = Machine.query.get_or_404(id)
         return render_template("machines_info.html", machine=machine, type_list=type_list)
+    else: abort(401)
 
 
 @app.route('/machine/<int:id>', methods=['post'])
@@ -86,6 +90,7 @@ def machines_info(id):
 
 @app.route('/machine/<int:id>/metrics', methods=['get'])
 def machines_info_get_metrics(id):
-    if session_name():
+    if check_page_accses():
         metrics = MachineMetric.query.filter(MachineMetric.machine_id == id).all()
         return render_template("metrics.html", metrics=metrics)
+    else: abort(401)
