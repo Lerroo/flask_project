@@ -23,12 +23,12 @@ def email_and_password_valid(dict_v):
     email = dict_v['email']
     password = dict_v['password']
     u = UsersInfo
-    query_email_and_password = db.session.query(u.user_login, u.email, u.user_password) \
+    stored_email_password  = db.session.query(u.user_login, u.user_password) \
         .filter(u.email == email) \
         .first()
-    if query_email_and_password is not None:
-        if check_password(password, query_email_and_password[2]):
-            session['name_usr'] = query_email_and_password[0]
+    if stored_email_password  is not None:
+        if check_password(password, stored_email_password[2]):
+            session['name_usr'] = stored_email_password[0]
             logging.info("User {} log in".format(session.get('name_usr')))
             session.modified = True
             return True
