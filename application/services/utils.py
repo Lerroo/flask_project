@@ -7,8 +7,6 @@ import os
 from ..db_app import app, db
 from ..models import Type
 
-type_list = Type.query.all()
-
 
 class ValidationException(Exception):
     def __init__(self, err):
