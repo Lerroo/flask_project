@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task1</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="row w-50 mx-auto" >
+        <div class="col text-white w-25 p-3">
+            <div class="mx-auto">
+                <h3 class="text-monospace text-dark">Hello {{user_inf['name']}}. Your activation token: {{user_inf['token']}}</h3>
+                <a href="/machine/new/" class="btn btn-success w-25 p-1 mb-2">Add machine</a> 
+            </div>
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">name</th>
+                    <th scope="col">type</th>
+                    <th scope="col">modifiedOn</th>
+                    <th scope="col">N metrics</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                {% for machine, machine_id_counts  in items %}
+                <tr>
+                    <td>{{ machine.id }}</td>
+                    <td>{{ machine.name }}</td>
+                    <td>{{ machine.type_model.value }}</td>
+                    <td>{{ machine.modifiedOn }}</td>
+                    <td>
+                        <a href="/machine/{{machine.id}}/metrics" class="text-monospace text-dark">{{ machine_id_counts }}</a>
+                    </td>
+                    <td>
+                        <a href="/machine/{{machine.id}}" class="btn btn-warning w-100 p-1">Details</a>
+                        <a href="/machine/del/{{machine.id}}" class="btn btn-danger w-100 p-1 mb-2">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>  
+        </div>
+    </div>   
+</body>
+</html>

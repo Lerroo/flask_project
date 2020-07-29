@@ -1,2 +1,6 @@
-*.bd
+*.db
+*.sqbpro
 *.pyc
+*.log
+*.db-journal
+.idea

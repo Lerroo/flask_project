@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>New</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Add new machine</h1> 
+        <div class="col text-center text-monospace">
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
+        </div>
+        <form method="post">
+            <input type="text" name="name" id="name" class="form-control" placeholder="Input name"><br>
+            <textarea name="description" id="description" class="form-control" placeholder="Input description"></textarea> <br>
+            <label  class="text-dark text-monospace" >Select type</label>
+            <select class="form-control" name='select_type' id="select_type">
+                {% for type in type_list %}
+                <option value={{type.id}}>{{type.value}}</option>
+                {% endfor %}
+            </select> <br>
+            <input type="submit" class="btn btn-success" value="Send">
+        </form>
+    </div>
+</body>
+</html> 
