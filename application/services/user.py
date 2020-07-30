@@ -28,8 +28,9 @@ def validate_email_and_password(dict_v):
     stored_email_password  = db.session.query(u.user_login, u.user_password) \
         .filter(u.email == email) \
         .first()
-    if stored_email_password  is not None:
-        if check_password(password, stored_email_password[2]):
+    if stored_email_password is not None:
+        print(stored_email_password)
+        if check_password(password, stored_email_password[1]):
             save_user_to_session(stored_email_password[0])
             return True
         else:

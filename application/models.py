@@ -18,17 +18,17 @@ class UsersInfo(db.Model):
     token = db.Column(db.String(120), unique=True)
 
     def add(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-            logging.info("Add new user {} ".format(self.user_login))
-        except exc.IntegrityError as err:
-            db.session.rollback()
-            logging.error("#500. An error IntegrityError")
-            return render_template('sign_up.html', message='unique err')
-        except exc.OperationalError as err:
-            logging.error("#500. An error OperationalError(database locked)")
-            abort(500)
+        # try:
+        db.session.add(self)
+        db.session.commit()
+        logging.info("Add new user {} ".format(self.user_login))
+        # except exc.IntegrityError as err:
+        #     db.session.rollback()
+        #     logging.error("#500. An error IntegrityError")
+        #     return render_template('sign_up.html', message='unique err')
+        # except exc.OperationalError as err:
+        #     logging.error("#500. An error OperationalError(database locked)")
+        #     abort(500)
 
     @staticmethod
     def verify_auth_token(token):
