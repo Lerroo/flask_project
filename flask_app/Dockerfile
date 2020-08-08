@@ -1,8 +1,12 @@
-FROM ubuntu:latest
-RUN apt-get update -y
-# RUN apt-get install -y python3-pip build-essential libssl-dev libffi-dev python3-dev
-COPY . /app
-WORKDIR /app 
-RUN pip3 install -r requirements.txt
-ENTRYPOINT ['python']
-CMD ['run.py']
+FROM python:3
+
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD [ "python3", "./run.py" ]

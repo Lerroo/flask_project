@@ -1,4 +1,4 @@
 Flask==1.0.2
-flask_sqlalchemy
-bcrypt
-flask_httpauth
+Flask-SQLAlchemy==2.4.4
+bcrypt==3.1.7
+Flask-HTTPAuth==4.1.0
