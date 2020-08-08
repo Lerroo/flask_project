@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, abort, g, session
 import os
 import sys
-import curl
 import json
 from flask_httpauth import HTTPBasicAuth 
 
