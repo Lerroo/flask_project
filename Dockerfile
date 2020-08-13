@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["cmd_docker.sh"]
+CMD ["python3", "./run.py"]
