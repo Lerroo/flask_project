@@ -32,6 +32,10 @@ class ValidationException(Exception):
 def now_time_iso():
     return datetime.now().isoformat(sep='T', timespec="seconds")
 
+def db_insert_type():
+    Type(value='windowsss').add()
+    Type(value='linuxxx').add()
+
 
 def check_page_accses():
     if not session.get('name_usr'):

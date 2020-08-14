@@ -16,6 +16,7 @@ if __name__ == "__main__":
     format_stdout = u'%(filename)s[LINE:%(lineno)d]#%(levelname)-8s [%(asctime)s]: %(message)s'
     logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO, format=format_stdout, datefmt='%d-%b-%y')
     db.create_all()
+    utils.db_insert_type()
     app.run(port=5000, host='0.0.0.0')
 
 
