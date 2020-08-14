@@ -182,7 +182,18 @@ class Machine(db.Model):
 class Type(db.Model):
     __tablename__ = 'type'
     id = db.Column(db.Integer, primary_key=True)
-    value = db.Column(db.String(64))
+    value = db.Column(db.String(64), unique=True)
+
+    def __init__(self, value):
+        self.value = value
+
+    def add(self):
+        try
+            db.session.add(self)
+            db.session.commit()
+        except exc.IntegrityError as err:
+            db.session.rollback()
+            logging.error("An error IntegrityError an Type().add")
 
 
 class MachineMetric(db.Model):
